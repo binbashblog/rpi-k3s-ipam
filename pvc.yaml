@@ -1,0 +1,16 @@
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  namespace: ipam
+  name: ipam-mariadb-pvc
+spec:
+  selector:
+    matchLabels:
+      name: ipam-mariadb-pv
+  storageClassName: ""
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

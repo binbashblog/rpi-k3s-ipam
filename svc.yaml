@@ -1,0 +1,15 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: ipam
+  name: phpipam-svc
+spec:
+  ports:
+    - name: http-port
+      protocol: TCP
+      port: 80
+      targetPort: 80
+  selector:
+    name: phpipam
+

@@ -1,0 +1,58 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: ipam
+  name: phpipam
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: phpipam
+  template:
+    metadata:
+      labels:
+        name: phpipam
+    spec:
+      containers:
+      - name: phpipam
+        image: pierrecdn/phpipam:1.4
+        resources:
+          limits:
+            memory: 128Mi
+            cpu: 500m
+        ports:
+          - name: http-port
+            containerPort: 80
+        env:
+        - name: MYSQL_ENV_MYSQL_USER
+          value: ipam
+        - name: MYSQL_ENV_MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: phpipam-passwd-ipam
+              key: secretkey
+        - name: MYSQL_ENV_MYSQL_HOST
+          value: 127.0.0.1
+      - name: phpipam-mariadb
+        image: mariadb:10.5.10
+        resources:
+          limits:
+            memory: 1.5Gi
+            cpu: 500m
+        env:
+        - name: MARIADB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: phpipam-passwd-root
+              key: secretkey
+        - name: MYSQL_ROOT_HOST
+          value: '%'
+        volumeMounts:
+          - name: ipam-mariadb-pvc
+            mountPath: /var/lib/mysql
+    volumes:
+    - name: ipam-mariadb-pvc
+      persistentVolumeClaim:
+        claimName: ipam-mariadb-pvc
+

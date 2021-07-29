@@ -1,0 +1,22 @@
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: ipam
+  name: phpipam-ing
+spec:
+  tls:
+  - hosts:
+      - HOSTNAME
+    secretName: SECRET
+  rules:
+  - host: HOSTNAME
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: phpipam-svc
+            port:
+              number: 80
